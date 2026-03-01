@@ -48,9 +48,15 @@ export function registerRouteTools(server: McpServer): void {
         statusCode: z.number().int().min(100).max(599).default(200).describe("HTTP response status code"),
         body: z.string().default("").describe("Response body (plain string or JSON)"),
         label: z.string().default("").describe("Optional label for the response"),
+        headers: z.array(
+          z.object({
+            key: z.string().describe("Header name (e.g. Content-Type)"),
+            value: z.string().describe("Header value (e.g. application/json)"),
+          })
+        ).default([]).describe("Optional response headers"),
       },
     },
-    async ({ environmentId, method, endpoint, statusCode, body, label }) => {
+    async ({ environmentId, method, endpoint, statusCode, body, label, headers }) => {
       const filePath = findEnvironmentFile(STORAGE_DIR, environmentId);
       if (!filePath) {
         return { content: [{ type: "text", text: `Environment '${environmentId}' not found.` }], isError: true };
@@ -73,7 +79,7 @@ export function registerRouteTools(server: McpServer): void {
             latency: 0,
             statusCode,
             label,
-            headers: [],
+            headers: headers.map(h => ({ key: h.key, value: h.value })),
             bodyType: BodyTypes.INLINE,
             filePath: "",
             databucketID: "",
@@ -176,7 +182,49 @@ export function registerRouteTools(server: McpServer): void {
       return { content: [{ type: "text", text: "Route updated successfully." }] };
     }
   );
+  // Update response headers of a route
+  server.registerTool(
+    "update_route_headers",
+    {
+      description: "Replace the response headers of the default response of a route",
+      inputSchema: {
+        environmentId: z.string().uuid().describe("Environment UUID"),
+        routeId: z.string().uuid().describe("Route UUID"),
+        headers: z.array(
+          z.object({
+            key: z.string().describe("Header name (e.g. Content-Type)"),
+            value: z.string().describe("Header value (e.g. application/json)"),
+          })
+        ).describe("New list of headers (replaces existing ones)"),
+      },
+    },
+    async ({ environmentId, routeId, headers }) => {
+      const filePath = findEnvironmentFile(STORAGE_DIR, environmentId);
+      if (!filePath) {
+        return { content: [{ type: "text", text: `Environment '${environmentId}' not found.` }], isError: true };
+      }
+
+      const env = readEnvironment(filePath);
+      const route = env.routes.find((r) => r.uuid === routeId);
+      if (!route) {
+        return { content: [{ type: "text", text: `Route '${routeId}' not found.` }], isError: true };
+      }
+
+      const defaultResponse = route.responses.find((r) => r.default) ?? route.responses[0];
+      if (!defaultResponse) {
+        return { content: [{ type: "text", text: "No response configured for this route." }], isError: true };
+      }
+
+      defaultResponse.headers = headers.map(h => ({ key: h.key, value: h.value }));
+
+      writeEnvironment(filePath, env);
+      return {
+        content: [{ type: "text", text: `Headers updated for route '${routeId}'. (${headers.length} header(s) set)` }],
+      };
+    }
+  );
 }
+
 
 function uuidv4(): string {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
