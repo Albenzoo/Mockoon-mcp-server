@@ -48,15 +48,16 @@ export function registerRouteTools(server: McpServer): void {
         statusCode: z.number().int().min(100).max(599).default(200).describe("HTTP response status code"),
         body: z.string().default("").describe("Response body (plain string or JSON)"),
         label: z.string().default("").describe("Optional label for the response"),
+        contentType: z.string().describe("Value for the Content-Type header (e.g. application/json)"),
         headers: z.array(
           z.object({
-            key: z.string().describe("Header name (e.g. Content-Type)"),
-            value: z.string().describe("Header value (e.g. application/json)"),
+            key: z.string().describe("Header name (e.g. X-Custom-Header)"),
+            value: z.string().describe("Header value"),
           })
-        ).default([]).describe("Optional response headers"),
+        ).default([]).describe("Additional response headers (excluding Content-Type)"),
       },
     },
-    async ({ environmentId, method, endpoint, statusCode, body, label, headers }) => {
+    async ({ environmentId, method, endpoint, statusCode, body, label, contentType, headers }) => {
       const filePath = findEnvironmentFile(STORAGE_DIR, environmentId);
       if (!filePath) {
         return { content: [{ type: "text", text: `Environment '${environmentId}' not found.` }], isError: true };
@@ -79,7 +80,10 @@ export function registerRouteTools(server: McpServer): void {
             latency: 0,
             statusCode,
             label,
-            headers: headers.map(h => ({ key: h.key, value: h.value })),
+            headers: [
+              { key: "Content-Type", value: contentType },
+              ...headers.map(h => ({ key: h.key, value: h.value })),
+            ],
             bodyType: BodyTypes.INLINE,
             filePath: "",
             databucketID: "",
