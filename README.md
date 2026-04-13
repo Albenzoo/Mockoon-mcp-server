@@ -28,7 +28,7 @@ Create `.vscode/mcp.json` in your workspace:
     "mockoon": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "mockoon-mcp"]
+      "args": ["-y", "mockoon-mcp@latest"]
     }
   }
 }
@@ -43,7 +43,7 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) o
   "mcpServers": {
     "mockoon": {
       "command": "npx",
-      "args": ["-y", "mockoon-mcp"]
+      "args": ["-y", "mockoon-mcp@latest"]
     }
   }
 }
@@ -58,7 +58,7 @@ Edit `~/.cursor/mcp.json` (global) or `.cursor/mcp.json` in your project:
   "mcpServers": {
     "mockoon": {
       "command": "npx",
-      "args": ["-y", "mockoon-mcp"]
+      "args": ["-y", "mockoon-mcp@latest"]
     }
   }
 }
