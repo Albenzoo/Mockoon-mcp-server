@@ -6,16 +6,12 @@ import { registerEnvironmentTools } from "./tools/environments.js";
 import { registerRouteTools } from "./tools/routes.js";
 import { registerTemplateTools } from "./tools/templates.js";
 import { listRunningServers, startServer, stopServer } from "./mockoon/processManager.js";
-import { findEnvironmentFile, getDefaultMockoonDir, getExtraDataDirs } from "./mockoon/fileManager.js";
-
-const STORAGE_DIRS = [
-  process.env.MOCKOON_STORAGE_DIR ?? getDefaultMockoonDir(),
-  ...getExtraDataDirs(),
-];
+import { findEnvironmentFile } from "./mockoon/fileManager.js";
+import { STORAGE_DIRS } from "./utils/helpers.js";
 
 const server = new McpServer({
   name: "mockoon-mcp-server",
-  version: "0.1.0",
+  version: "0.2.0",
 });
 
 // Register tool groups

@@ -3,17 +3,11 @@ import { z } from "zod";
 import { Environment } from "@mockoon/commons";
 import path from "path";
 import {
-  getDefaultMockoonDir,
-  getExtraDataDirs,
   listEnvironments,
   writeEnvironment,
   findEnvironmentFile,
 } from "../mockoon/fileManager.js";
-
-const STORAGE_DIRS = [
-  process.env.MOCKOON_STORAGE_DIR ?? getDefaultMockoonDir(),
-  ...getExtraDataDirs(),
-];
+import { STORAGE_DIRS, uuidv4 } from "../utils/helpers.js";
 
 export function registerEnvironmentTools(server: McpServer): void {
   // List all available environments
@@ -106,9 +100,4 @@ export function registerEnvironmentTools(server: McpServer): void {
   );
 }
 
-function uuidv4(): string {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0;
-    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
-  });
-}
+

@@ -2,17 +2,11 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { DataBucket } from "@mockoon/commons";
 import {
-  getDefaultMockoonDir,
-  getExtraDataDirs,
   readEnvironment,
   writeEnvironment,
   findEnvironmentFile,
 } from "../mockoon/fileManager.js";
-
-const STORAGE_DIRS = [
-  process.env.MOCKOON_STORAGE_DIR ?? getDefaultMockoonDir(),
-  ...getExtraDataDirs(),
-];
+import { STORAGE_DIRS, uuidv4, shortId } from "../utils/helpers.js";
 
 export function registerTemplateTools(server: McpServer): void {
   // List all databuckets in an environment
@@ -134,13 +128,4 @@ export function registerTemplateTools(server: McpServer): void {
   );
 }
 
-function uuidv4(): string {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0;
-    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
-  });
-}
 
-function shortId(): string {
-  return Math.random().toString(36).substring(2, 8).toUpperCase();
-}
