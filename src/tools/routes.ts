@@ -188,7 +188,7 @@ export function registerRouteTools(server: McpServer): void {
   server.registerTool(
     "update_route_headers",
     {
-      description: "Replace the response headers of the default response of a route",
+      description: "Overwrite all headers of the default response of a route. Replaces the entire header list — include Content-Type if you want to preserve it.",
       inputSchema: {
         environmentId: z.uuid().describe("Environment UUID"),
         routeId: z.uuid().describe("Route UUID"),
@@ -309,6 +309,46 @@ export function registerRouteTools(server: McpServer): void {
       return {
         content: [{ type: "text", text: `Response added to route '${routeId}'.\nResponse ID: ${responseUuid}` }],
       };
+    }
+  );
+
+  // Get the default response of a route
+  server.registerTool(
+    "get_default_response",
+    {
+      description: "Return the current default response of a route, including status code, headers, and body. Useful to inspect the current state before making changes.",
+      inputSchema: {
+        environmentId: z.uuid().describe("Environment UUID"),
+        routeId: z.uuid().describe("Route UUID"),
+      },
+    },
+    async ({ environmentId, routeId }) => {
+      const filePath = findEnvironmentFile(STORAGE_DIRS, environmentId);
+      if (!filePath) {
+        return { content: [{ type: "text", text: `Environment '${environmentId}' not found.` }], isError: true };
+      }
+
+      const env = readEnvironment(filePath);
+      const route = env.routes.find((r) => r.uuid === routeId);
+      if (!route) {
+        return { content: [{ type: "text", text: `Route '${routeId}' not found.` }], isError: true };
+      }
+
+      const defaultResponse = route.responses.find((r) => r.default) ?? route.responses[0];
+      if (!defaultResponse) {
+        return { content: [{ type: "text", text: "No response configured for this route." }], isError: true };
+      }
+
+      const headers = defaultResponse.headers.map((h) => `  ${h.key}: ${h.value}`).join("\n");
+      const text = [
+        `Response ID: ${defaultResponse.uuid}`,
+        `Label: ${defaultResponse.label || "(none)"}`,
+        `Status: ${defaultResponse.statusCode}`,
+        `Headers:\n${headers || "  (none)"}`,
+        `Body:\n${defaultResponse.body || "  (empty)"}`,
+      ].join("\n");
+
+      return { content: [{ type: "text", text }] };
     }
   );
 

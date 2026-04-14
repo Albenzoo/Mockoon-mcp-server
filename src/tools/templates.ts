@@ -14,7 +14,7 @@ export function registerTemplateTools(server: McpServer): void {
     "list_templates",
     {
       description: "List all databuckets (data templates) in a Mockoon environment",
-      inputSchema: { environmentId: z.string().uuid().describe("Environment UUID") },
+      inputSchema: { environmentId: z.uuid().describe("Environment UUID") },
     },
     async ({ environmentId }) => {
       const filePath = findEnvironmentFile(STORAGE_DIRS, environmentId);
@@ -38,7 +38,7 @@ export function registerTemplateTools(server: McpServer): void {
     {
       description: "Create a new databucket (data template) in a Mockoon environment",
       inputSchema: {
-        environmentId: z.string().uuid().describe("Environment UUID"),
+        environmentId: z.uuid().describe("Environment UUID"),
         name: z.string().describe("Databucket name"),
         value: z.string().describe("JSON content or Handlebars template for the databucket"),
       },
@@ -75,8 +75,8 @@ export function registerTemplateTools(server: McpServer): void {
     {
       description: "Update the content of an existing databucket",
       inputSchema: {
-        environmentId: z.string().uuid().describe("Environment UUID"),
-        templateId: z.string().uuid().describe("Databucket UUID"),
+        environmentId: z.uuid().describe("Environment UUID"),
+        templateId: z.uuid().describe("Databucket UUID"),
         value: z.string().describe("New databucket value"),
       },
     },
@@ -104,8 +104,8 @@ export function registerTemplateTools(server: McpServer): void {
     {
       description: "Delete a databucket from a Mockoon environment",
       inputSchema: {
-        environmentId: z.string().uuid().describe("Environment UUID"),
-        templateId: z.string().uuid().describe("UUID of the databucket to delete"),
+        environmentId: z.uuid().describe("Environment UUID"),
+        templateId: z.uuid().describe("UUID of the databucket to delete"),
       },
     },
     async ({ environmentId, templateId }) => {

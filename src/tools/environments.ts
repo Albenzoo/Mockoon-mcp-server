@@ -85,7 +85,7 @@ export function registerEnvironmentTools(server: McpServer): void {
     "delete_environment",
     {
       description: "Delete a Mockoon environment by UUID. The environment file will be permanently removed from disk.",
-      inputSchema: { environmentId: z.string().uuid().describe("UUID of the environment to delete") },
+      inputSchema: { environmentId: z.uuid().describe("UUID of the environment to delete") },
     },
     async ({ environmentId }) => {
       const filePath = findEnvironmentFile(STORAGE_DIRS, environmentId);
