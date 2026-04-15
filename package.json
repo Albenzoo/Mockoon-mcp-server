@@ -1,10 +1,12 @@
 {
   "name": "mockoon-mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCP Server for Mockoon - create and manage mock APIs via LLMs",
   "type": "module",
   "main": "dist/index.js",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "prepare": "npm run build",
     "build": "tsc",

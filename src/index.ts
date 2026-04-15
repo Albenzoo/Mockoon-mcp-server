@@ -2,8 +2,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { createRequire } from "module";
-const { version } = createRequire(import.meta.url)("../../package.json");
 import { registerEnvironmentTools } from "./tools/environments.js";
 import { registerRouteTools } from "./tools/routes.js";
 import { registerTemplateTools } from "./tools/templates.js";
@@ -13,7 +11,7 @@ import { STORAGE_DIRS } from "./utils/helpers.js";
 
 const server = new McpServer({
   name: "mockoon-mcp",
-  version,
+  version: "1.0.1",
 });
 
 // Register tool groups

@@ -10,6 +10,7 @@ An MCP server that lets AI assistants (Claude, GitHub Copilot, Cursor, etc.) cre
 
 - [Node.js](https://nodejs.org/) 18+
 - [Mockoon Desktop or Mockoon CLI](https://mockoon.com/download/)
+
 ---
 
 ## Configuration
@@ -126,6 +127,42 @@ Example:
 | `start_server`         | Start a mock server for an environment  |
 | `stop_server`          | Stop a running mock server              |
 | `list_running_servers` | List all currently running mock servers |
+
+---
+
+## Example Prompts
+
+Here are some example phrases you can say to your AI assistant to interact with Mockoon via this MCP server:
+
+**Exploring environments and routes**
+
+- *"List all available Mockoon environments."*
+- *"Show me all the routes in the Taccuino environment."*
+- *"Get the full detail of route `GET /users/:id`, including all responses and rules."*
+
+**Creating routes**
+
+- *"Create a `GET /products` route in the Demo API environment that returns a JSON array of 3 products with status 200."*
+- *"Add a `POST /auth/login` route with two responses: 200 with a token body and 401 Unauthorized."*
+- *"Scaffold a full CRUD API for a `Task` resource under `/tasks` in the Demo environment."*
+
+**Updating and managing routes**
+
+- *"Change the default response of `GET /users` to return status 204 with an empty body."*
+- *"Duplicate the `GET /orders` route."*
+- *"Delete the `DELETE /legacy/endpoint` route from the environment."*
+- *"Add a conditional 403 response to `POST /documents` that triggers when the `X-Role` header equals `guest`."*
+
+**Databuckets**
+
+- *"Create a databucket called `UserList` in the Demo API with a JSON array of 5 fake users."*
+- *"Update the `ProductCatalog` databucket with a new list of items."*
+
+**Server management**
+
+- *"Start the mock server for the Taccuino environment."*
+- *"Stop all running mock servers."*
+- *"Which Mockoon environments are currently running?"*
 
 ---
 
